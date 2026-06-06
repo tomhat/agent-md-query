@@ -2,30 +2,28 @@
 
 A tiny CLI that helps AI agents query structured Markdown before reading files.
 
+> Stop wasting tokens reading every Markdown file. Query the metadata first.
+
 ## Why?
 
 AI agents often waste tokens by reading too many Markdown files.
 `agent-md-query` lets agents filter files by YAML Front Matter first,
 then read only the files they actually need.
 
-## Features
+This is useful for agent workflows that manage tasks, notes, decisions,
+project state, or knowledge as Markdown files.
 
-- Query Markdown files by YAML Front Matter
-- Output results as Markdown, JSON, or file paths
-- Designed for AI agents such as Codex, Claude Code, Cursor, and local agents
-- Works well with Obsidian-style Markdown
-- No database required for the first version
+## Background
 
-## Example
+`agent-md-query` was originally created for `ai-hisho-os`,
+a Markdown-first AI secretary OS experiment.
 
-## Installation
+In that project, AI agents manage workboards, tasks, state, memory,
+and history as Markdown files. However, letting agents read all Markdown
+files every time can waste tokens and create noisy context.
 
-## Usage
+The same problem appears in many agent-based workflows:
+Obsidian vaults, Git-managed knowledge bases, task boards,
+Codex projects, Claude Code projects, Cursor workspaces, and local agents.
 
-## Front Matter Schema
-
-## Output Formats
-
-## Roadmap
-
-## License
+`agent-md-query` solves this
