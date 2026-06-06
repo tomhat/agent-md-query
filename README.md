@@ -20,10 +20,4 @@ a Markdown-first AI secretary OS experiment.
 
 In that project, AI agents manage workboards, tasks, state, memory,
 and history as Markdown files. However, letting agents read all Markdown
-files every time can waste tokens and create noisy context.
-
-The same problem appears in many agent-based workflows:
-Obsidian vaults, Git-managed knowledge bases, task boards,
-Codex projects, Claude Code projects, Cursor workspaces, and local agents.
-
-`agent-md-query` solves this
+files every time can
