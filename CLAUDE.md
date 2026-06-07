@@ -12,13 +12,17 @@ Core value:
 
 ## Rule organization
 
-Keep this file short and project-wide. Detailed rules are split into `.claude/rules/`.
+Keep this file short and project-wide. Detailed rules are organized under `.claude/rules/`.
 
-@.claude/rules/00-project-overview.md
-@.claude/rules/10-python-package.md
-@.claude/rules/20-cli-behavior.md
-@.claude/rules/30-markdown-scanner.md
-@.claude/rules/40-testing-docs.md
+The split rule files should be treated as role-specific guidance and read when relevant to the files or task being edited.
+
+Rule files:
+
+- `.claude/rules/00-project-overview.md`: product concept and MVP non-goals
+- `.claude/rules/10-python-package.md`: Python package structure and implementation style
+- `.claude/rules/20-cli-behavior.md`: CLI commands, filters, and output formats
+- `.claude/rules/30-markdown-scanner.md`: Markdown scanning and Front Matter parsing
+- `.claude/rules/40-testing-docs.md`: tests, fixtures, documentation, and PR reporting
 
 ## Current priority
 
