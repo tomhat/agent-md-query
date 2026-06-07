@@ -8,14 +8,14 @@ This file is the working guide for Claude Code in this repository.
 
 Core concept:
 
-```text
+~~~text
 Query metadata first.
 Read full Markdown only when needed.
 Reduce token waste and context noise.
-```
+~~~
 
 ## Project identity
 
 `agent-md-query` is a generic OSS tool.
 
-It was originally motivated by `
+It was originally motivated by `tomhat/ai-hisho
