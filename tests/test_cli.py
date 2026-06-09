@@ -86,6 +86,24 @@ def test_list_missing_path_returns_error(capsys) -> None:
     assert "error:" in captured.err
 
 
+def test_summary_groups_by_project(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert main(["summary", str(fixture_dir), "--group-by", "project"]) == 0
+    captured = capsys.readouterr()
+    assert "# Summary" in captured.out
+    assert "## example-project" in captured.out
+    assert "Codex Token Budget Review" in captured.out
+    assert "Completed Task" in captured.out
+    assert "task-doing.md" in captured.out
+    assert "task-done.md" in captured.out
+
+
+def test_summary_missing_path_returns_error(capsys) -> None:
+    assert main(["summary", str(FIXTURES / "missing"), "--group-by", "project"]) == 1
+    captured = capsys.readouterr()
+    assert "error:" in captured.err
+
+
 def test_list_format_json(capsys) -> None:
     fixture_dir = FIXTURES / "with_frontmatter"
     assert (

@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from agent_md_query.formatter import render
+from agent_md_query.formatter import format_summary, render
 from agent_md_query.matcher import WhereParseError, matches, parse_where
 from agent_md_query.scanner import scan
 
@@ -39,6 +39,21 @@ def build_parser() -> argparse.ArgumentParser:
         default="markdown",
         help="Output format (default: markdown)",
     )
+
+    summary_parser = subparsers.add_parser(
+        "summary",
+        help="Summarize Markdown files grouped by a metadata field",
+    )
+    summary_parser.add_argument(
+        "path",
+        help="Directory or Markdown file to scan",
+    )
+    summary_parser.add_argument(
+        "--group-by",
+        required=True,
+        metavar="FIELD",
+        help="Front Matter field to group by",
+    )
     return parser
 
 
@@ -66,6 +81,21 @@ def run_list(path: str, where_exprs: list[str], fmt: str) -> int:
     return 0
 
 
+def run_summary(path: str, group_by: str) -> int:
+    """Execute the summary subcommand."""
+    try:
+        results = scan(path)
+    except FileNotFoundError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
+    output = format_summary(results, group_by)
+    if output:
+        print(output, end="" if output.endswith("\n") else "\n")
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Parse arguments and dispatch to subcommands."""
     parser = build_parser()
@@ -77,6 +107,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "list":
         return run_list(args.path, args.where, args.format)
+
+    if args.command == "summary":
+        return run_summary(args.path, args.group_by)
 
     parser.error(f"unknown command: {args.command}")
     return 1
