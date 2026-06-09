@@ -66,7 +66,14 @@ def format_markdown(results: list[dict]) -> str:
             metadata = item["metadata"]
             status = metadata.get("status", "")
             priority = metadata.get("priority", "")
-            lines.append(f"- {status} / {priority}: {item['title']}")
+            header_parts = [
+                str(part) for part in (status, priority) if part not in (None, "")
+            ]
+            header = " / ".join(header_parts)
+            if header:
+                lines.append(f"- {header}: {item['title']}")
+            else:
+                lines.append(f"- {item['title']}")
             lines.append(f"  - file: `{item['file_path']}`")
             if "assignee" in metadata:
                 lines.append(f"  - assignee: {metadata['assignee']}")
