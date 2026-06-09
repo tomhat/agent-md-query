@@ -9,6 +9,7 @@ from agent_md_query.formatter import (
     format_json,
     format_markdown,
     format_paths,
+    format_summary,
     render,
 )
 
@@ -122,3 +123,24 @@ def test_render_dispatch() -> None:
     assert "Codex Token Budget Review" in render(results, "markdown")
     assert json.loads(render(results, "json"))
     assert render(results, "paths").endswith("task-001.md")
+
+
+def test_format_summary_groups_by_project() -> None:
+    output = format_summary(_sample_results(), "project")
+    assert output.startswith("# Summary\n")
+    assert "## ai-hisho-os\n" in output
+    assert "## (no project)\n" in output
+    assert "- doing / high: Codex Token Budget Review" in output
+    assert "  - file: `examples/workboard/tasks/task-001.md`" in output
+    assert "assignee" not in output
+    assert "updated_at" not in output
+
+
+def test_format_summary_groups_by_status() -> None:
+    output = format_summary(_sample_results(), "status")
+    assert "## doing\n" in output
+    assert "## todo\n" in output
+
+
+def test_format_summary_empty_results() -> None:
+    assert format_summary([], "project") == "# Summary\n"

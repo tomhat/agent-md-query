@@ -84,6 +84,42 @@ def format_markdown(results: list[dict]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def _missing_group_label(field: str) -> str:
+    return f"(no {field})"
+
+
+def format_summary(results: list[dict], group_by: str) -> str:
+    """Return a concise Markdown summary grouped by a metadata field."""
+    if not results:
+        return "# Summary\n"
+
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for item in results:
+        group_value = item["metadata"].get(group_by)
+        if group_value is None or group_value == "":
+            label = _missing_group_label(group_by)
+        else:
+            label = str(group_value)
+        grouped[label].append(item)
+
+    lines = ["# Summary", ""]
+    missing_label = _missing_group_label(group_by)
+    group_names = sorted(grouped.keys(), key=lambda name: (name == missing_label, name))
+
+    for group_name in group_names:
+        lines.append(f"## {group_name}")
+        lines.append("")
+        for item in grouped[group_name]:
+            metadata = item["metadata"]
+            status = metadata.get("status", "")
+            priority = metadata.get("priority", "")
+            lines.append(f"- {status} / {priority}: {item['title']}")
+            lines.append(f"  - file: `{item['file_path']}`")
+        lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def render(results: list[dict], fmt: str) -> str:
     """Dispatch to the formatter for the requested output format."""
     if fmt == "paths":
