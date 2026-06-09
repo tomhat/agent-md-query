@@ -53,3 +53,24 @@ def matches(metadata: dict, conditions: list[tuple[str, str, str]]) -> bool:
             raise ValueError(f"unsupported operator: {op}")
 
     return True
+
+def matches_tags(metadata: dict, required_tags: list[str]) -> bool:
+    """Return whether metadata includes all required tags (AND).
+
+    Missing ``tags`` never matches when any tag filter is present. A scalar
+    string ``tags`` value is coerced to a one-element list; any other type does
+    not match.
+    """
+    if not required_tags:
+        return True
+
+    raw_tags = metadata.get("tags")
+    if raw_tags is None:
+        return False
+    if isinstance(raw_tags, str):
+        raw_tags = [raw_tags]
+    elif not isinstance(raw_tags, list):
+        return False
+
+    tag_set = {str(tag) for tag in raw_tags}
+    return all(tag in tag_set for tag in required_tags)
