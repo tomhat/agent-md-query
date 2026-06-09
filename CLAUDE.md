@@ -35,6 +35,17 @@ Implement the MVP in issue order:
 
 Do not implement later roadmap features unless explicitly requested.
 
+## Implementation planning
+
+Implementation plans live under `docs/plans/`.
+
+- `docs/plans/README.md`: MVP plan overview, issue sequencing, and dependencies.
+- `docs/plans/issue-00N-*.md`: per-issue plan (scope, tasks, test plan, risks, out of scope).
+
+Before implementing an issue, read its plan in `docs/plans/` together with the issue
+and the relevant `.claude/rules/` file. If the plan and the actual issue disagree,
+follow the issue and update the plan.
+
 ## Working rules
 
 - Keep changes small and issue-scoped.
