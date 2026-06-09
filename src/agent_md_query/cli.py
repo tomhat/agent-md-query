@@ -6,7 +6,7 @@ import argparse
 import sys
 
 from agent_md_query.formatter import render
-from agent_md_query.matcher import WhereParseError, matches, parse_where
+from agent_md_query.matcher import WhereParseError, matches, matches_tags, parse_where
 from agent_md_query.scanner import scan
 from agent_md_query.validator import validate as validate_results
 
@@ -40,6 +40,13 @@ def build_parser() -> argparse.ArgumentParser:
         default="markdown",
         help="Output format (default: markdown)",
     )
+    list_parser.add_argument(
+        "--tag",
+        action="append",
+        default=[],
+        metavar="TAG",
+        help="Filter by Front Matter tag; repeatable (AND)",
+    )
 
     validate_parser = subparsers.add_parser(
         "validate",
@@ -52,7 +59,12 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run_list(path: str, where_exprs: list[str], fmt: str) -> int:
+def run_list(
+    path: str,
+    where_exprs: list[str],
+    fmt: str,
+    tag_filters: list[str] | None = None,
+) -> int:
     """Execute the list subcommand."""
     try:
         conditions = [parse_where(expr) for expr in where_exprs]
@@ -66,8 +78,12 @@ def run_list(path: str, where_exprs: list[str], fmt: str) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 
+    tags = tag_filters if tag_filters is not None else []
     filtered = [
-        item for item in results if matches(item["metadata"], conditions)
+        item
+        for item in results
+        if matches(item["metadata"], conditions)
+        and matches_tags(item["metadata"], tags)
     ]
     output = render(filtered, fmt)
     if output:
@@ -106,7 +122,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "list":
-        return run_list(args.path, args.where, args.format)
+        return run_list(args.path, args.where, args.format, args.tag)
 
     if args.command == "validate":
         return run_validate(args.path)

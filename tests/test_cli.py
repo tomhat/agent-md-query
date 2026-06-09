@@ -86,6 +86,72 @@ def test_list_missing_path_returns_error(capsys) -> None:
     assert "error:" in captured.err
 
 
+
+
+def test_list_filters_by_tag(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert main(["list", str(fixture_dir), "--tag", "token-budget"]) == 0
+    captured = capsys.readouterr()
+    assert "Codex Token Budget Review" in captured.out
+    assert "Completed Task" not in captured.out
+
+
+def test_list_tag_excludes_non_matching(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert (
+        main(
+            [
+                "list",
+                str(fixture_dir),
+                "--tag",
+                "nonexistent",
+                "--format",
+                "paths",
+            ]
+        )
+        == 0
+    )
+    captured = capsys.readouterr()
+    assert captured.out.strip() == ""
+
+
+def test_list_tag_and_where_combined(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert (
+        main(
+            [
+                "list",
+                str(fixture_dir),
+                "--where",
+                "status=doing",
+                "--tag",
+                "dispatch",
+            ]
+        )
+        == 0
+    )
+    captured = capsys.readouterr()
+    assert "Codex Token Budget Review" in captured.out
+
+
+def test_list_multiple_tags_use_and(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert (
+        main(
+            [
+                "list",
+                str(fixture_dir),
+                "--tag",
+                "token-budget",
+                "--tag",
+                "dispatch",
+            ]
+        )
+        == 0
+    )
+    captured = capsys.readouterr()
+    assert "Codex Token Budget Review" in captured.out
+
 def test_list_format_json(capsys) -> None:
     fixture_dir = FIXTURES / "with_frontmatter"
     assert (
