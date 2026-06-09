@@ -5,6 +5,9 @@ from __future__ import annotations
 import argparse
 import sys
 
+from agent_md_query.matcher import WhereParseError, matches, parse_where
+from agent_md_query.scanner import scan
+
 
 def build_parser() -> argparse.ArgumentParser:
     """Build the top-level argument parser."""
@@ -13,8 +16,47 @@ def build_parser() -> argparse.ArgumentParser:
         description="Query Markdown files by YAML Front Matter metadata.",
     )
     subparsers = parser.add_subparsers(dest="command")
-    subparsers.add_parser("list", help="List Markdown files matching Front Matter filters")
+
+    list_parser = subparsers.add_parser(
+        "list",
+        help="List Markdown files matching Front Matter filters",
+    )
+    list_parser.add_argument(
+        "path",
+        help="Directory or Markdown file to scan",
+    )
+    list_parser.add_argument(
+        "--where",
+        action="append",
+        default=[],
+        metavar="EXPR",
+        help="Filter by metadata (key=value or key!=value); repeatable (AND)",
+    )
     return parser
+
+
+def run_list(path: str, where_exprs: list[str]) -> int:
+    """Execute the list subcommand."""
+    try:
+        conditions = [parse_where(expr) for expr in where_exprs]
+    except WhereParseError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    try:
+        results = scan(path)
+    except FileNotFoundError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
+    filtered = [
+        item for item in results if matches(item["metadata"], conditions)
+    ]
+
+    for item in filtered:
+        print(item["file_path"])
+
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -27,7 +69,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "list":
-        parser.error("list command is not implemented yet")
+        return run_list(args.path, args.where)
 
     parser.error(f"unknown command: {args.command}")
     return 1
