@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from agent_md_query.matcher import WhereParseError, matches, parse_where
+from agent_md_query.matcher import WhereParseError, matches, matches_tags, parse_where
 
 
 def test_parse_where_equality() -> None:
@@ -78,3 +78,35 @@ def test_multiple_conditions_fail_when_one_fails() -> None:
 def test_string_comparison_for_numeric_yaml_values() -> None:
     metadata = {"priority": 1}
     assert matches(metadata, [("priority", "==", "1")])
+
+
+def test_matches_tags_single_tag() -> None:
+    metadata = {"tags": ["token-budget", "dispatch"]}
+    assert matches_tags(metadata, ["token-budget"])
+
+
+def test_matches_tags_excludes_non_matching_tag() -> None:
+    metadata = {"tags": ["token-budget", "dispatch"]}
+    assert not matches_tags(metadata, ["other"])
+
+
+def test_matches_tags_requires_all_tags() -> None:
+    metadata = {"tags": ["token-budget", "dispatch"]}
+    assert matches_tags(metadata, ["token-budget", "dispatch"])
+    assert not matches_tags(metadata, ["token-budget", "missing"])
+
+
+def test_matches_tags_missing_tags_field() -> None:
+    assert not matches_tags({}, ["token-budget"])
+
+
+def test_matches_tags_scalar_string_coerced() -> None:
+    assert matches_tags({"tags": "token-budget"}, ["token-budget"])
+
+
+def test_matches_tags_non_list_non_string_tags_field() -> None:
+    assert not matches_tags({"tags": 42}, ["42"])
+
+
+def test_matches_tags_empty_required_list() -> None:
+    assert matches_tags({}, [])
