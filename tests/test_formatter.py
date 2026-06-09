@@ -99,6 +99,20 @@ def test_format_markdown_omits_optional_sub_lines() -> None:
     assert "updated_at" not in task_two_section
 
 
+def test_format_markdown_folds_empty_status_priority() -> None:
+    results = [
+        {
+            "file_path": "examples/notes/note.md",
+            "title": "Bare Note",
+            "metadata": {"project": "p"},
+        }
+    ]
+    output = format_markdown(results)
+    assert "- Bare Note" in output
+    assert " / :" not in output
+    assert "-  / : Bare Note" not in output
+
+
 def test_format_markdown_empty_results() -> None:
     assert format_markdown([]) == "# Query Result\n"
 
