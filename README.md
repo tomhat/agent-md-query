@@ -151,10 +151,16 @@ agent-md-query list examples/workboard/tasks --where status=doing --format json
 agent-md-query list examples/workboard/tasks --where status=doing --format paths
 ```
 
-Planned commands (post-MVP):
+Filter by tag:
 
 ```bash
 agent-md-query list examples/workboard/tasks --tag token-budget
+agent-md-query list examples/workboard/tasks --where status=doing --tag dispatch
+```
+
+Planned commands (post-MVP):
+
+```bash
 agent-md-query summary examples/workboard/tasks --group-by project
 agent-md-query validate examples/workboard/tasks
 ```
@@ -175,10 +181,11 @@ Multiple conditions:
 agent-md-query list examples/workboard/tasks --where project=ai-hisho-os --where status!=done
 ```
 
-Filter by tag (planned):
+Filter by tag:
 
 ```bash
 agent-md-query list examples/workboard/tasks --tag token-budget
+agent-md-query list examples/workboard/tasks --where status=doing --tag dispatch
 ```
 
 ### `summary`
@@ -191,10 +198,17 @@ agent-md-query summary examples/workboard/tasks --group-by project
 
 ### `validate`
 
-Validate Front Matter fields (planned).
+Validate recommended Front Matter fields (`type`, `id`, `project`, `status`, `priority`, `updated_at`).
 
 ```bash
 agent-md-query validate examples/workboard/tasks
+```
+
+Example output:
+
+```text
+OK: examples/workboard/tasks/task-20260607-001.md
+MISSING: examples/workboard/tasks/task-002.md -> updated_at
 ```
 
 ## Front Matter Schema

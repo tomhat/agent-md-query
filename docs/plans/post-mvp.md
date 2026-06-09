@@ -1,11 +1,17 @@
 # Post-MVP outline (issues #5, #6, #8, #9)
 
-These issues are **out of scope for the MVP** and must not be implemented unless explicitly
-requested (`CLAUDE.md` → "Current priority"; `.claude/rules/00-project-overview.md`). This
-file captures intent only, at a lighter level than the MVP plans, so the order and shape are
-clear when the time comes.
+> **Status update**: the MVP (#1–#4) is implemented and merged into `main`. Each issue below
+> now has a **detailed plan** grounded in the merged interfaces:
+> [issue-005](issue-005-tag-filtering.md), [issue-006](issue-006-summary-group-by.md),
+> [issue-008](issue-008-validate.md), [issue-009](issue-009-fixtures-docs.md).
+> This file remains the lighter outline + sequencing rationale. Still implement only on
+> explicit request, one issue per PR.
 
-Build MVP (#1–#4) first. Each item below assumes the MVP package structure exists.
+These issues were **out of scope for the MVP**. This file captures intent at a lighter level
+than the per-issue plans, so the order and shape stay clear.
+
+The MVP package structure now exists, so every item below builds on real
+`scanner` / `matcher` / `formatter` / `cli` interfaces.
 
 ## Sequencing
 

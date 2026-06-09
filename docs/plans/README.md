@@ -24,25 +24,28 @@ agent-md-query list <path> --where status=doing --format paths
 The MVP is **issues #1–#4** only. Everything else is post-MVP and must not be built unless
 explicitly requested.
 
-### In scope (MVP, v0.1)
+### MVP (v0.1) — implemented and merged
 
-| Issue | Title | Plan |
-|---|---|---|
-| #1 | Set up Python package scaffold | [issue-001-package-scaffold.md](issue-001-package-scaffold.md) |
-| #2 | Implement Markdown scanner and Front Matter parser | [issue-002-scanner.md](issue-002-scanner.md) |
-| #3 | Implement `list` command with `--where` filters | [issue-003-list-where.md](issue-003-list-where.md) |
-| #4 | Add output formats: markdown, json, paths | [issue-004-output-formats.md](issue-004-output-formats.md) |
+| Issue | Title | Plan | Status |
+|---|---|---|---|
+| #1 | Set up Python package scaffold | [issue-001-package-scaffold.md](issue-001-package-scaffold.md) | done |
+| #2 | Implement Markdown scanner and Front Matter parser | [issue-002-scanner.md](issue-002-scanner.md) | done |
+| #3 | Implement `list` command with `--where` filters | [issue-003-list-where.md](issue-003-list-where.md) | done |
+| #4 | Add output formats: markdown, json, paths | [issue-004-output-formats.md](issue-004-output-formats.md) | done |
 
-### Out of scope (post-MVP)
+### Post-MVP — planned
 
-Tracked at a lighter level of detail in [post-mvp.md](post-mvp.md):
+Each has a detailed plan grounded in the merged MVP interfaces. A lighter outline and the
+sequencing rationale live in [post-mvp.md](post-mvp.md).
 
-- #5 tag filtering (v0.2)
-- #6 `summary` with `--group-by` (v0.2)
-- #8 `validate` command (v0.3)
-- #9 fixtures and documentation examples (cross-cutting)
+| Issue | Title | Plan | Roadmap |
+|---|---|---|---|
+| #5 | Add tag filtering (`--tag`) | [issue-005-tag-filtering.md](issue-005-tag-filtering.md) | v0.2 |
+| #6 | Add `summary` with `--group-by` | [issue-006-summary-group-by.md](issue-006-summary-group-by.md) | v0.2 |
+| #8 | Add `validate` command | [issue-008-validate.md](issue-008-validate.md) | v0.3 |
+| #9 | Fixtures and documentation examples | [issue-009-fixtures-docs.md](issue-009-fixtures-docs.md) | cross-cutting |
 
-Explicitly **not** in the MVP at all (see `.claude/rules/00-project-overview.md`):
+Explicitly **not** in the project at all (see `.claude/rules/00-project-overview.md`):
 SQLite index, vector/semantic search, embeddings, daemon, web server, complex query
 language, AI API integration, Obsidian plugin behavior, ai-hisho-os-specific behavior.
 

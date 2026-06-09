@@ -34,35 +34,43 @@ def parse_where(expr: str) -> tuple[str, str, str]:
     return key, op, value
 
 
-def _metadata_value(metadata: dict, key: str) -> str:
-    """Return the string form of a metadata value for comparison.
+def matches(metadata: dict, conditions: list[tuple[str, str, str]]) -> bool:
+    """Return whether metadata satisfies all conditions (AND).
 
     Values are compared as strings so YAML scalars such as ``priority: 1``
-    match ``--where priority=1``.
+    match ``--where priority=1``. A missing key never satisfies ``==`` and
+    always satisfies ``!=``.
     """
-    if key not in metadata:
-        return ""
-    return str(metadata[key])
-
-
-def matches(metadata: dict, conditions: list[tuple[str, str, str]]) -> bool:
-    """Return whether metadata satisfies all conditions (AND)."""
     for key, op, expected in conditions:
-        if key not in metadata:
-            if op == "==":
-                return False
-            if op == "!=":
-                continue
-            return False
-
-        actual = _metadata_value(metadata, key)
+        present = key in metadata
         if op == "==":
-            if actual != expected:
+            if not present or str(metadata[key]) != expected:
                 return False
         elif op == "!=":
-            if actual == expected:
+            if present and str(metadata[key]) == expected:
                 return False
         else:
             raise ValueError(f"unsupported operator: {op}")
 
     return True
+
+def matches_tags(metadata: dict, required_tags: list[str]) -> bool:
+    """Return whether metadata includes all required tags (AND).
+
+    Missing ``tags`` never matches when any tag filter is present. A scalar
+    string ``tags`` value is coerced to a one-element list; any other type does
+    not match.
+    """
+    if not required_tags:
+        return True
+
+    raw_tags = metadata.get("tags")
+    if raw_tags is None:
+        return False
+    if isinstance(raw_tags, str):
+        raw_tags = [raw_tags]
+    elif not isinstance(raw_tags, list):
+        return False
+
+    tag_set = {str(tag) for tag in raw_tags}
+    return all(tag in tag_set for tag in required_tags)
