@@ -158,12 +158,14 @@ agent-md-query list examples/workboard/tasks --tag token-budget
 agent-md-query list examples/workboard/tasks --where status=doing --tag dispatch
 ```
 
-Planned commands (post-MVP):
+Summarize and validate:
 
 ```bash
 agent-md-query summary examples/workboard/tasks --group-by project
 agent-md-query validate examples/workboard/tasks
 ```
+
+See [`examples/README.md`](examples/README.md) for runnable commands and their output.
 
 ## Commands
 
