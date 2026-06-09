@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+from agent_md_query.formatter import render
 from agent_md_query.matcher import WhereParseError, matches, parse_where
 from agent_md_query.scanner import scan
 
@@ -32,10 +33,16 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="EXPR",
         help="Filter by metadata (key=value or key!=value); repeatable (AND)",
     )
+    list_parser.add_argument(
+        "--format",
+        choices=["markdown", "json", "paths"],
+        default="markdown",
+        help="Output format (default: markdown)",
+    )
     return parser
 
 
-def run_list(path: str, where_exprs: list[str]) -> int:
+def run_list(path: str, where_exprs: list[str], fmt: str) -> int:
     """Execute the list subcommand."""
     try:
         conditions = [parse_where(expr) for expr in where_exprs]
@@ -52,9 +59,9 @@ def run_list(path: str, where_exprs: list[str]) -> int:
     filtered = [
         item for item in results if matches(item["metadata"], conditions)
     ]
-
-    for item in filtered:
-        print(item["file_path"])
+    output = render(filtered, fmt)
+    if output:
+        print(output, end="" if output.endswith("\n") else "\n")
 
     return 0
 
@@ -69,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "list":
-        return run_list(args.path, args.where)
+        return run_list(args.path, args.where, args.format)
 
     parser.error(f"unknown command: {args.command}")
     return 1

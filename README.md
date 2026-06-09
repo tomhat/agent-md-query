@@ -95,7 +95,7 @@ Review and reduce token usage when delegating work from one Codex session to ano
 You can query them before asking an AI agent to read the full file:
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing --format markdown
+agent-md-query list examples/workboard/tasks --where status=doing --format markdown
 ```
 
 Example output:
@@ -106,7 +106,7 @@ Example output:
 ## ai-hisho-os
 
 - doing / high: Codex Token Budget Review
-  - file: `workboard/tasks/task-20260607-001.md`
+  - file: `examples/workboard/tasks/task-20260607-001.md`
   - assignee: codex
   - updated_at: 2026-06-07
 ```
@@ -115,7 +115,18 @@ Then the AI agent can read only the matching file instead of scanning the whole 
 
 ## Installation
 
-Not available yet.
+PyPI release is not available yet.
+
+Local development:
+
+```bash
+git clone https://github.com/tomhat/agent-md-query.git
+cd agent-md-query
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+python -m agent_md_query --help
+```
 
 Planned installation method:
 
@@ -123,32 +134,29 @@ Planned installation method:
 pip install agent-md-query
 ```
 
-Local development:
-
-```bash
-git clone https://github.com/tomhat/agent-md-query.git
-cd agent-md-query
-python -m agent_md_query --help
-```
-
 ## Usage
 
-Planned commands:
+Available commands (v0.1):
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing
-agent-md-query list workboard/tasks --where project=ai-hisho-os --where status!=done
-agent-md-query list workboard/tasks --tag token-budget
-agent-md-query summary workboard/tasks --group-by project
-agent-md-query validate workboard/tasks
+agent-md-query list examples/workboard/tasks --where status=doing
+agent-md-query list examples/workboard/tasks --where project=ai-hisho-os --where status!=done
 ```
 
 Output formats:
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing --format markdown
-agent-md-query list workboard/tasks --where status=doing --format json
-agent-md-query list workboard/tasks --where status=doing --format paths
+agent-md-query list examples/workboard/tasks --where status=doing --format markdown
+agent-md-query list examples/workboard/tasks --where status=doing --format json
+agent-md-query list examples/workboard/tasks --where status=doing --format paths
+```
+
+Planned commands (post-MVP):
+
+```bash
+agent-md-query list examples/workboard/tasks --tag token-budget
+agent-md-query summary examples/workboard/tasks --group-by project
+agent-md-query validate examples/workboard/tasks
 ```
 
 ## Commands
@@ -158,19 +166,19 @@ agent-md-query list workboard/tasks --where status=doing --format paths
 List Markdown files that match Front Matter conditions.
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing
+agent-md-query list examples/workboard/tasks --where status=doing
 ```
 
 Multiple conditions:
 
 ```bash
-agent-md-query list workboard/tasks --where project=ai-hisho-os --where status!=done
+agent-md-query list examples/workboard/tasks --where project=ai-hisho-os --where status!=done
 ```
 
-Filter by tag:
+Filter by tag (planned):
 
 ```bash
-agent-md-query list workboard/tasks --tag token-budget
+agent-md-query list examples/workboard/tasks --tag token-budget
 ```
 
 ### `summary`
@@ -178,15 +186,15 @@ agent-md-query list workboard/tasks --tag token-budget
 Summarize matching Markdown files.
 
 ```bash
-agent-md-query summary workboard/tasks --group-by project
+agent-md-query summary examples/workboard/tasks --group-by project
 ```
 
 ### `validate`
 
-Validate Front Matter fields.
+Validate Front Matter fields (planned).
 
 ```bash
-agent-md-query validate workboard/tasks
+agent-md-query validate examples/workboard/tasks
 ```
 
 ## Front Matter Schema
@@ -228,7 +236,7 @@ Common fields:
 Best for AI agents and human-readable summaries.
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing --format markdown
+agent-md-query list examples/workboard/tasks --where status=doing --format markdown
 ```
 
 Example:
@@ -239,7 +247,7 @@ Example:
 ## ai-hisho-os
 
 - doing / high: Codex Token Budget Review
-  - file: `workboard/tasks/task-20260607-001.md`
+  - file: `examples/workboard/tasks/task-20260607-001.md`
   - assignee: codex
   - updated_at: 2026-06-07
 ```
@@ -249,7 +257,7 @@ Example:
 Best for scripts and integrations.
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing --format json
+agent-md-query list examples/workboard/tasks --where status=doing --format json
 ```
 
 Example:
@@ -263,7 +271,7 @@ Example:
     "priority": "high",
     "assignee": "codex",
     "updated_at": "2026-06-07",
-    "file_path": "workboard/tasks/task-20260607-001.md"
+    "file_path": "examples/workboard/tasks/task-20260607-001.md"
   }
 ]
 ```
@@ -273,14 +281,13 @@ Example:
 Best when the next step is reading only matching files.
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing --format paths
+agent-md-query list examples/workboard/tasks --where status=doing --format paths
 ```
 
 Example:
 
 ```text
-workboard/tasks/task-20260607-001.md
-workboard/tasks/task-20260607-002.md
+examples/workboard/tasks/task-20260607-001.md
 ```
 
 ## AI Agent Usage Pattern
@@ -296,7 +303,7 @@ Recommended pattern for AI agents:
 For example:
 
 ```bash
-agent-md-query list workboard/tasks --where status=doing --format paths
+agent-md-query list examples/workboard/tasks --where status=doing --format paths
 ```
 
 Then read only the returned files.

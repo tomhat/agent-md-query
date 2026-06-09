@@ -26,9 +26,29 @@ def test_no_args_prints_help(capsys) -> None:
     assert "agent-md-query" in captured.out
 
 
-def test_list_filters_by_where(capsys) -> None:
+def test_list_filters_by_where_markdown_default(capsys) -> None:
     fixture_dir = FIXTURES / "with_frontmatter"
     assert main(["list", str(fixture_dir), "--where", "status=doing"]) == 0
+    captured = capsys.readouterr()
+    assert "# Query Result" in captured.out
+    assert "Codex Token Budget Review" in captured.out
+
+
+def test_list_format_paths(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert (
+        main(
+            [
+                "list",
+                str(fixture_dir),
+                "--where",
+                "status=doing",
+                "--format",
+                "paths",
+            ]
+        )
+        == 0
+    )
     captured = capsys.readouterr()
     lines = [line for line in captured.out.strip().splitlines() if line]
     assert lines == [str(fixture_dir / "task-doing.md")]
@@ -49,9 +69,9 @@ def test_list_multiple_where_filters(capsys) -> None:
         == 0
     )
     captured = capsys.readouterr()
-    lines = captured.out.strip().splitlines()
-    assert len(lines) == 1
-    assert lines[0].endswith("task-doing.md")
+    assert "Codex Token Budget Review" in captured.out
+    assert "task-doing.md" in captured.out
+    assert "task-done.md" not in captured.out
 
 
 def test_list_invalid_where_returns_error(capsys) -> None:
@@ -64,3 +84,23 @@ def test_list_missing_path_returns_error(capsys) -> None:
     assert main(["list", str(FIXTURES / "missing"), "--where", "status=doing"]) == 1
     captured = capsys.readouterr()
     assert "error:" in captured.err
+
+
+def test_list_format_json(capsys) -> None:
+    fixture_dir = FIXTURES / "with_frontmatter"
+    assert (
+        main(
+            [
+                "list",
+                str(fixture_dir),
+                "--where",
+                "status=doing",
+                "--format",
+                "json",
+            ]
+        )
+        == 0
+    )
+    captured = capsys.readouterr()
+    assert '"title": "Codex Token Budget Review"' in captured.out
+    assert '"file_path"' in captured.out
