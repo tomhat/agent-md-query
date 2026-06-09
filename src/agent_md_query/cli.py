@@ -8,6 +8,7 @@ import sys
 from agent_md_query.formatter import render
 from agent_md_query.matcher import WhereParseError, matches, parse_where
 from agent_md_query.scanner import scan
+from agent_md_query.validator import validate as validate_results
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,6 +40,15 @@ def build_parser() -> argparse.ArgumentParser:
         default="markdown",
         help="Output format (default: markdown)",
     )
+
+    validate_parser = subparsers.add_parser(
+        "validate",
+        help="Validate Markdown Front Matter recommended fields",
+    )
+    validate_parser.add_argument(
+        "path",
+        help="Directory or Markdown file to scan",
+    )
     return parser
 
 
@@ -66,6 +76,26 @@ def run_list(path: str, where_exprs: list[str], fmt: str) -> int:
     return 0
 
 
+def run_validate(path: str) -> int:
+    """Execute the validate subcommand."""
+    try:
+        results = scan(path)
+    except FileNotFoundError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
+    failures = 0
+    for file_path, missing in validate_results(results):
+        if missing:
+            failures += 1
+            fields = ", ".join(missing)
+            print(f"MISSING: {file_path} -> {fields}")
+        else:
+            print(f"OK: {file_path}")
+
+    return 1 if failures else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Parse arguments and dispatch to subcommands."""
     parser = build_parser()
@@ -77,6 +107,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "list":
         return run_list(args.path, args.where, args.format)
+
+    if args.command == "validate":
+        return run_validate(args.path)
 
     parser.error(f"unknown command: {args.command}")
     return 1
